@@ -4,11 +4,11 @@ import { trigger, state, style, animate, transition } from '@angular/animations'
 
 import { AuthService } from './services/auth.service';
 
-import { $WebSocket } from 'angular2-websocket/angular2-websocket';
+// import { $WebSocket } from 'angular2-websocket/angular2-websocket';
 
 import { ApiRootHostname_nodir } from './classes/api-root';
 
-let myws = new $WebSocket("ws://"+ApiRootHostname_nodir()+"channel/getUserCount");
+// let myws = new $WebSocket('ws://' + ApiRootHostname_nodir() + 'channel/getUserCount');
 
 @Component({
   selector: 'app-root',
@@ -84,13 +84,12 @@ export class AppComponent {
     private router: Router,
     public auth: AuthService
   ) {
-    auth.handleAuthentication();
     this.appState = 'active';
     this.contentState = 'active';
     this.dockState = 'inactive';
     this.brandState = 'max';
     this.exlogoState = 'visible';
-    this.loadUserCount();
+    // this.loadUserCount();
   }
 
   onActivate(event) {
@@ -126,14 +125,15 @@ export class AppComponent {
   loadUserCount() {
     this.auth.pullUserCount()
       .subscribe((res) => {
-        this.userCount = res.count;
+        if (res.hasOwnProperty("count"))
+          this.userCount = res["count"];
       });
-    myws.onMessage(
-        (msg: MessageEvent)=> {
-            if (msg.data.ranklist)
-              this.userCount = msg.data.count;
-        },
-        {autoApply: false}
-    );
+    // myws.onMessage(
+    //     (msg: MessageEvent) => {
+    //         if (msg.data.ranklist)
+    //           this.userCount = msg.data.count;
+    //     },
+    //     {autoApply: false}
+    // );
   }
 }
